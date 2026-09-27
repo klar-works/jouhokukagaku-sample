@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>品質・環境への取り組み | 城北化学工業株式会社</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Noto Sans JP"', 'sans-serif'] } } } }</script>
+</head>
+<body class="flex flex-col min-h-screen selection:bg-sky-200 selection:text-sky-900 bg-white">
+    
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b bg-white border-transparent py-4 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <a href="index.html" class="flex items-center space-x-3 z-50 group">
+                <div class="w-10 h-10 bg-slate-900 rounded-sm flex items-center justify-center"><i data-lucide="factory" class="w-6 h-6 text-white"></i></div>
+                <div><h1 class="text-xl font-bold tracking-tight text-slate-900 leading-tight">城北化学工業</h1></div>
+            </a>
+            <nav class="hidden lg:flex items-center h-full">
+                <div class="relative group h-full flex items-center px-4"><a href="index.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-slate-700 hover:text-sky-900">ホーム</span></a></div>
+                <div class="relative group h-full flex items-center px-4"><a href="about.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-slate-700 hover:text-sky-900">企業情報</span></a></div>
+                <div class="relative group h-full flex items-center px-4"><a href="products.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-slate-700 hover:text-sky-900">製品情報</span></a></div>
+                <div class="relative group h-full flex items-center px-4"><a href="sustainability.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-sky-900">品質・環境</span></a></div>
+                <div class="flex items-center space-x-3 pl-6 ml-2 border-l border-slate-200 h-full">
+                    <a href="contact.html" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 rounded-sm">お問い合わせ</a>
+                </div>
+            </nav>
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-900 bg-slate-100 rounded-sm"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        </div>
+        <div id="mobile-menu" class="fixed inset-0 bg-white z-40 hidden flex-col pt-24 px-6 h-screen">
+            <a href="index.html" class="block py-4 text-lg font-bold text-slate-800 border-b">ホーム</a>
+            <a href="about.html" class="block py-4 text-lg font-bold text-slate-800 border-b">企業情報</a>
+            <a href="products.html" class="block py-4 text-lg font-bold text-slate-800 border-b">製品情報</a>
+            <a href="sustainability.html" class="block py-4 text-lg font-bold text-sky-900 border-b">品質・環境</a>
+            <a href="contact.html" class="mt-8 px-6 py-4 text-lg font-bold bg-slate-900 text-white rounded-sm text-center">お問い合わせ</a>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-16">
+        <div class="relative bg-slate-900 py-24 px-4 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1538356345610-c02ec01b0b2e?q=80&w=2940&auto=format&fit=crop" alt="自然と環境" class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay" />
+            <div class="relative z-10 max-w-7xl mx-auto text-center">
+                <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">品質・環境への取り組み</h1>
+                <p class="text-sky-400 font-bold tracking-[0.2em] uppercase text-sm">Quality & Eco</p>
+            </div>
+        </div>
+
+        <section class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-16 text-center animate-on-scroll fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">確かな品質と、地球が喜ぶモノづくり</h2>
+                    <p class="text-slate-600 mt-4 leading-relaxed max-w-3xl mx-auto">
+                        私たちは包装資材メーカーとして、お客様に安全で高品質な製品をお届けする「品質管理体制」と、プラスチック資源の有効活用を通じた「環境負荷低減」の両立を重要な使命と考えています。
+                    </p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-12 mb-24 animate-on-scroll fade-in-up">
+                    <div class="w-full md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=2940&auto=format&fit=crop" alt="品質検査" class="w-full aspect-[4/3] object-cover rounded-sm shadow-md">
+                    </div>
+                    <div class="w-full md:w-1/2 lg:pl-10">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-sky-700 pl-4">徹底した品質管理体制</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            お客様に安心してご使用いただける製品を提供するため、厳格な社内検査基準を設けています。原料の受け入れから、製膜、加工、出荷に至る各工程で入念なチェックを実施。最新の測定機器を用いて、強度や厚みの均一性など安定した品質の維持に努めています。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center gap-12 mb-24 animate-on-scroll fade-in-up">
+                    <div class="w-full md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2813&auto=format&fit=crop" alt="環境保護" class="w-full aspect-[4/3] object-cover rounded-sm shadow-md">
+                    </div>
+                    <div class="w-full md:w-1/2 lg:pr-10">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-green-700 pl-4">環境負荷低減への取り組み</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            サトウキビ由来のバイオマスプラスチックや、燃焼時のCO2を大幅に削減する「グリーンナノ」、さらには再生原料（リサイクル）を積極的に活用し、持続可能な社会（SDGs）の推進をサポートします。工場内での製造ロス削減活動も全社を挙げて取り組んでいます。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-12 animate-on-scroll fade-in-up">
+                    <div class="w-full md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2940&auto=format&fit=crop" alt="クリーンルーム" class="w-full aspect-[4/3] object-cover rounded-sm shadow-md">
+                    </div>
+                    <div class="w-full md:w-1/2 lg:pl-10">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4 border-l-4 border-slate-900 pl-4">衛生的な製造環境の維持</h3>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            食品包装や医療・精密機器関連など、高い衛生基準が求められるパッケージにも対応すべく、工場内の清掃・防虫対策を徹底管理しています。従業員への定期的な衛生教育を実施し、常にクリーンな環境でモノづくりを行っています。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 共通詳細フッター -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 border-t-4 border-sky-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 bg-white rounded-sm flex items-center justify-center"><i data-lucide="factory" class="w-6 h-6 text-slate-900"></i></div>
+                        <div><h2 class="text-xl font-bold tracking-tight text-white">城北化学工業株式会社</h2></div>
+                    </div>
+                    <p class="text-sm leading-relaxed text-slate-400 mb-6 max-w-md">
+                        環境保護に貢献するポリエチレンフィルム。<br />
+                        自社工場による一貫生産体制で、安心・安全な包装を実現します。
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2">サイトマップ</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> ホーム</a></li>
+                        <li><a href="about.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> 企業情報・強み</a></li>
+                        <li><a href="products.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> 製品・規格</a></li>
+                        <li><a href="sustainability.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> 品質・環境への取り組み</a></li>
+                        <li><a href="contact.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2">所在地・連絡先</h4>
+                    <address class="text-sm text-slate-400 not-italic leading-relaxed">
+                        〒339-0035<br>
+                        埼玉県さいたま市岩槻区笹久保新田xxxx<br>
+                        TEL: 048-xxx-xxxx
+                    </address>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+                <p>&copy; 2026 Johoku Chemical Industry Co., Ltd. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>
