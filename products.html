@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>製品情報 | 城北化学工業株式会社</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Noto Sans JP"', 'sans-serif'] } } } }</script>
+</head>
+<body class="flex flex-col min-h-screen selection:bg-sky-200 selection:text-sky-900 bg-white">
+    
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b bg-white border-transparent py-4 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <a href="index.html" class="flex items-center space-x-3 z-50 group">
+                <div class="w-10 h-10 bg-slate-900 rounded-sm flex items-center justify-center"><i data-lucide="factory" class="w-6 h-6 text-white"></i></div>
+                <div><h1 class="text-xl font-bold tracking-tight text-slate-900 leading-tight">城北化学工業</h1></div>
+            </a>
+            <nav class="hidden lg:flex items-center h-full">
+                <div class="relative group h-full flex items-center px-4"><a href="index.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-slate-700 hover:text-sky-900">ホーム</span></a></div>
+                <div class="relative group h-full flex items-center px-4"><a href="about.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-slate-700 hover:text-sky-900">企業情報</span></a></div>
+                <div class="relative group h-full flex items-center px-4"><a href="products.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-sky-900">製品情報</span></a></div>
+                <div class="relative group h-full flex items-center px-4"><a href="sustainability.html" class="flex flex-col items-center py-2"><span class="text-sm font-bold text-slate-700 hover:text-sky-900">品質・環境</span></a></div>
+                <div class="flex items-center space-x-3 pl-6 ml-2 border-l border-slate-200 h-full">
+                    <a href="contact.html" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 rounded-sm">お問い合わせ</a>
+                </div>
+            </nav>
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-900 bg-slate-100 rounded-sm"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        </div>
+        <div id="mobile-menu" class="fixed inset-0 bg-white z-40 hidden flex-col pt-24 px-6 h-screen">
+            <a href="index.html" class="block py-4 text-lg font-bold text-slate-800 border-b">ホーム</a>
+            <a href="about.html" class="block py-4 text-lg font-bold text-slate-800 border-b">企業情報</a>
+            <a href="products.html" class="block py-4 text-lg font-bold text-sky-900 border-b">製品情報</a>
+            <a href="sustainability.html" class="block py-4 text-lg font-bold text-slate-800 border-b">品質・環境</a>
+            <a href="contact.html" class="mt-8 px-6 py-4 text-lg font-bold bg-slate-900 text-white rounded-sm text-center">お問い合わせ</a>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-24 pb-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 mt-8">
+            <aside class="w-full md:w-64 shrink-0">
+                <div class="bg-slate-900 text-white text-center font-bold py-3 mb-2 shadow-sm">製品紹介</div>
+                <nav class="flex flex-col space-y-1">
+                    <a href="#" class="flex items-center border border-slate-200 bg-slate-50 hover:bg-white transition-colors p-2 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=100&h=100&fit=crop" alt="環境対応製品" class="w-14 h-14 object-cover border border-slate-200 mr-3">
+                        <span class="text-sm font-bold text-slate-800"><span class="text-red-600 mr-1">■</span>環境対応製品</span>
+                    </a>
+                    <a href="#" class="flex items-center border border-slate-200 bg-white hover:bg-slate-50 transition-colors p-2 shadow-sm">
+                        <div class="w-14 h-14 bg-slate-100 flex items-center justify-center border border-slate-200 mr-3 text-slate-400"><i data-lucide="flask-conical" class="w-6 h-6"></i></div>
+                        <span class="text-sm font-bold text-slate-700"><span class="text-red-600 mr-1">■</span>開発製品</span>
+                    </a>
+                    <a href="#" class="flex items-center border border-slate-200 bg-white hover:bg-slate-50 transition-colors p-2 shadow-sm">
+                        <div class="w-14 h-14 bg-slate-100 flex items-center justify-center border border-slate-200 mr-3 text-slate-400"><i data-lucide="shopping-bag" class="w-6 h-6"></i></div>
+                        <span class="text-sm font-bold text-slate-700"><span class="text-red-600 mr-1">■</span>レジ袋・規格袋</span>
+                    </a>
+                    <a href="#" class="flex items-center border border-slate-200 bg-white hover:bg-slate-50 transition-colors p-2 shadow-sm">
+                        <div class="w-14 h-14 bg-slate-100 flex items-center justify-center border border-slate-200 mr-3 text-slate-400"><i data-lucide="scissors" class="w-6 h-6"></i></div>
+                        <span class="text-sm font-bold text-slate-700"><span class="text-red-600 mr-1">■</span>各種加工品</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <main class="w-full md:w-auto flex-grow">
+                <div class="bg-gradient-to-b from-slate-600 to-slate-800 text-white px-4 py-3 font-bold mb-6 rounded-sm shadow-sm flex items-center">
+                    環境対応製品
+                </div>
+                
+                <p class="text-sm text-slate-700 mb-8 leading-relaxed font-medium">
+                    環境対策に対応すべく、企画・立案・資材調達・生産まで、努められるよう製造設備を増やし、環境対策に取り組んで参ります。
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white border border-slate-200 hover:shadow-md transition-shadow">
+                        <div class="aspect-[4/3] p-4 bg-slate-50 flex items-center justify-center border-b border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1605600659873-d808a1d87131?w=400&q=80" class="max-h-full object-contain" alt="卵殻配合の消臭袋">
+                        </div>
+                        <div class="p-3 bg-white">
+                            <span class="text-red-600 font-bold mr-1">■</span><span class="text-sm font-bold text-slate-800">卵殻配合の消臭袋</span>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 hover:shadow-md transition-shadow">
+                        <div class="aspect-[4/3] p-4 bg-amber-50 flex items-center justify-center border-b border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&q=80" class="max-h-full object-contain" alt="バイオマス規格袋">
+                        </div>
+                        <div class="p-3 bg-white">
+                            <span class="text-red-600 font-bold mr-1">■</span><span class="text-sm font-bold text-slate-800">バイオマス規格袋</span>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 hover:shadow-md transition-shadow">
+                        <div class="aspect-[4/3] p-4 bg-sky-50 flex items-center justify-center border-b border-slate-100">
+                            <div class="text-4xl font-bold text-sky-800">0</div>
+                        </div>
+                        <div class="p-3 bg-white">
+                            <span class="text-red-600 font-bold mr-1">■</span><span class="text-sm font-bold text-slate-800">グリーンポリエチレン</span>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 hover:shadow-md transition-shadow">
+                        <div class="aspect-[4/3] p-4 bg-blue-50 flex items-center justify-center border-b border-slate-100">
+                            <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&q=80" class="max-h-full object-contain" alt="ReseamST R">
+                        </div>
+                        <div class="p-3 bg-white">
+                            <span class="text-red-600 font-bold mr-1">■</span><span class="text-sm font-bold text-slate-800">ReseamST R</span>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 hover:shadow-md transition-shadow">
+                        <div class="aspect-[4/3] p-4 bg-stone-100 flex items-center justify-center border-b border-slate-100">
+                            <span class="font-bold text-xl text-stone-600 tracking-widest">LIMEX</span>
+                        </div>
+                        <div class="p-3 bg-white">
+                            <span class="text-red-600 font-bold mr-1">■</span><span class="text-sm font-bold text-slate-800">ライメックス</span>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 hover:shadow-md transition-shadow">
+                        <div class="aspect-[4/3] p-4 bg-yellow-100 flex items-center justify-center border-b border-slate-100">
+                            <span class="font-bold text-xl text-yellow-800">MATER-BI</span>
+                        </div>
+                        <div class="p-3 bg-white">
+                            <span class="text-red-600 font-bold mr-1">■</span><span class="text-sm font-bold text-slate-800">マタビー</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </main>
+
+    <!-- 共通詳細フッター -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 border-t-4 border-sky-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 bg-white rounded-sm flex items-center justify-center"><i data-lucide="factory" class="w-6 h-6 text-slate-900"></i></div>
+                        <div><h2 class="text-xl font-bold tracking-tight text-white">城北化学工業株式会社</h2></div>
+                    </div>
+                    <p class="text-sm leading-relaxed text-slate-400 mb-6 max-w-md">
+                        環境保護に貢献するポリエチレンフィルム。<br />
+                        自社工場による一貫生産体制で、安心・安全な包装を実現します。
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2">サイトマップ</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> ホーム</a></li>
+                        <li><a href="about.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> 企業情報・強み</a></li>
+                        <li><a href="products.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> 製品・規格</a></li>
+                        <li><a href="sustainability.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> 品質・環境への取り組み</a></li>
+                        <li><a href="contact.html" class="hover:text-sky-400 transition-colors flex items-center"><i data-lucide="chevron-right" class="w-3 h-3 mr-1"></i> お問い合わせ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 border-b border-slate-700 pb-2">所在地・連絡先</h4>
+                    <address class="text-sm text-slate-400 not-italic leading-relaxed">
+                        〒339-0035<br>
+                        埼玉県さいたま市岩槻区笹久保新田xxxx<br>
+                        TEL: 048-xxx-xxxx
+                    </address>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+                <p>&copy; 2026 Johoku Chemical Industry Co., Ltd. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="main.js"></script>
+</body>
+</html>
