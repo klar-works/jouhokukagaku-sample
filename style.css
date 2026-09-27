@@ -1,0 +1,60 @@
+/* STREAMING_CHUNK:Setting base styles */
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: #334155;
+    overflow-x: hidden;
+}
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #0c4a6e; }
+
+html { scroll-behavior: smooth; }
+
+/* STREAMING_CHUNK:Defining scroll animations */
+/* アニメーション用クラス（JSと連携） */
+.animate-on-scroll {
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-up { transform: translateY(30px); }
+.fade-in-left { transform: translateX(30px); }
+.fade-in-right { transform: translateX(-30px); }
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+/* 意図的なディレイ用 */
+.delay-100 { transition-delay: 100ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+
+/* STREAMING_CHUNK:Configuring splash screen animations */
+/* スプラッシュスクリーンのフェードアウト用 */
+.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.splash-logo {
+    animation: slideUp 1s ease-out 0.3s both;
+}
+
+.splash-text {
+    animation: fadeIn 1s ease-out 1.2s both;
+}
+
+@keyframes slideUp { 
+    from { opacity: 0; transform: translateY(20px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+}
