@@ -1,3 +1,4 @@
+<!-- products.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -42,7 +43,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-8 mt-8">
             <aside class="w-full md:w-64 shrink-0">
                 <div class="bg-slate-900 text-white text-center font-bold py-3 mb-2 shadow-sm">製品紹介</div>
-                <nav class="flex flex-col space-y-1">
+                <nav class="flex flex-col space-y-1 mb-6">
                     <a href="#" class="flex items-center border border-slate-200 bg-slate-50 hover:bg-white transition-colors p-2 shadow-sm">
                         <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=100&h=100&fit=crop" alt="環境対応製品" class="w-14 h-14 object-cover border border-slate-200 mr-3">
                         <span class="text-sm font-bold text-slate-800"><span class="text-red-600 mr-1">■</span>環境対応製品</span>
@@ -60,6 +61,17 @@
                         <span class="text-sm font-bold text-slate-700"><span class="text-red-600 mr-1">■</span>各種加工品</span>
                     </a>
                 </nav>
+
+                <!-- 【追加】ウェブカタログボタンセクション -->
+                <div class="bg-slate-50 p-5 border border-slate-200 rounded-sm text-center shadow-sm">
+                    <h4 class="text-sm font-bold text-slate-800 mb-3">最新の製品カタログ</h4>
+                    <!-- target="_blank" で別タブでPDFを開きます -->
+                    <a href="城北化学工業 8ページサンプルカタログ.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-bold bg-sky-700 text-white rounded-sm hover:bg-sky-800 transition-colors shadow-sm group">
+                        <i data-lucide="book-open" class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300"></i>
+                        ウェブカタログはこちら
+                    </a>
+                    <p class="text-[10px] text-slate-500 mt-2 font-medium">※PDFファイルが開きます</p>
+                </div>
             </aside>
 
             <main class="w-full md:w-auto flex-grow">
