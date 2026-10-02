@@ -84,8 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 header.classList.add('border-transparent');
             }
         });
-   }
-    /* STREAMING_CHUNK:PDF Viewer Control */
+   }/* STREAMING_CHUNK:PDF Viewer Control */
     // 7. ウェブカタログ (PDF.js) の制御（見開き対応版）
     const pdfModal = document.getElementById('pdf-modal');
     const pdfTrigger = document.getElementById('open-catalog-btn');
@@ -94,66 +93,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const pdfLoading = document.getElementById('pdf-loading');
     
     let pdfDoc = null;
-    let layoutStates = []; // 例: [[1], [2,3], [4,5], [6,7], [8]]
+    let layoutStates = []; 
     let currentStateIndex = 0;
     let pageRendering = false;
     
-    // 【重要】解像度スケール（2.0〜3.0）にすると文字が非常に綺麗になります
     const scale = 2.5; 
 
     if(pdfTrigger && pdfModal && typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
-        // ファイル名（変更済みのもの）
-        const url = 'catalog.pdf'; 
+        const url = 'catalog.pdf'; // ※ご自身のファイル名に合わせてください
 
-        // 全ページ数から「表紙」「見開き」「裏表紙」のページ配列を生成する関数
         const buildLayoutMap = (totalPages) => {
             layoutStates = [];
-            layoutStates.push([1]); // 1ページ目は必ず単独（表紙）
-            
+            layoutStates.push([1]); 
             for (let i = 2; i <= totalPages - 1; i += 2) {
                 if (i + 1 <= totalPages) {
-                    layoutStates.push([i, i + 1]); // 偶数・奇数の見開きペア
+                    layoutStates.push([i, i + 1]); 
                 } else {
                     layoutStates.push([i]);
                 }
             }
-            // 総ページ数が偶数の場合、最後は単独（裏表紙）
             if (totalPages > 1 && totalPages % 2 === 0) {
                 layoutStates.push([totalPages]);
             }
         };
 
-        // 指定されたステート（見開きペア等）を描画する関数
         const renderState = async (stateIndex) => {
             if (pageRendering) return;
             pageRendering = true;
             pdfLoading.classList.remove('hidden');
             
-            // 既存のCanvasをクリア
             pdfContainer.innerHTML = '';
             
             const pagesToRender = layoutStates[stateIndex];
-            
-            // フッターのページ番号表示を更新 (例: "2 - 3")
             document.getElementById('pdf-page-num').textContent = pagesToRender.join(' - ');
 
             try {
-                // 配列内のページ（1枚または2枚）を順番に描画
                 for (let i = 0; i < pagesToRender.length; i++) {
                     const pageNum = pagesToRender[i];
                     const page = await pdfDoc.getPage(pageNum);
                     const viewport = page.getViewport({ scale: scale });
                     
                     const canvas = document.createElement('canvas');
-                    // 見開き（2枚）の場合は幅を最大50%に制限、単独の場合は制限なし
                     const isSpread = pagesToRender.length === 2;
                     canvas.className = isSpread 
                         ? 'max-h-full w-auto max-w-[50%] object-contain bg-white shadow-md transition-opacity duration-500'
                         : 'max-h-full w-auto max-w-full object-contain bg-white shadow-md transition-opacity duration-500';
                     
-                    // 見開きの左側（偶数ページ）の場合は、本の綴じ目のような右ボーダーをつける
                     if (isSpread && i === 0) {
                         canvas.classList.add('border-r', 'border-slate-300');
                     }
@@ -174,14 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
             pdfLoading.classList.add('hidden');
         };
 
-        // 前へ進む
         const onPrevPage = () => {
             if (currentStateIndex <= 0 || pageRendering) return;
             currentStateIndex--;
             renderState(currentStateIndex);
         };
 
-        // 次へ進む
         const onNextPage = () => {
             if (currentStateIndex >= layoutStates.length - 1 || pageRendering) return;
             currentStateIndex++;
@@ -195,12 +180,19 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfTrigger.addEventListener('click', (e) => {
             e.preventDefault();
             pdfModal.classList.remove('hidden');
-            void pdfModal.offsetWidth; // アニメーション用
+            void pdfModal.offsetWidth;
             pdfModal.classList.add('opacity-100');
-            document.body.style.overflow = 'hidden'; // 背面のスクロールを禁止
+            document.body.style.overflow = 'hidden'; 
 
             if (!pdfDoc) {
-                pdfjsLib.getDocument(url).promise.then((pdfDoc_) => {
+                // 【修正ポイント】getDocumentに日本語フォント（CMap）の解決用URLを追加
+                const loadingTask = pdfjsLib.getDocument({
+                    url: url,
+                    cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+                    cMapPacked: true
+                });
+
+                loadingTask.promise.then((pdfDoc_) => {
                     pdfDoc = pdfDoc_;
                     document.getElementById('pdf-page-count').textContent = pdfDoc.numPages;
                     buildLayoutMap(pdfDoc.numPages);
@@ -216,10 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // モーダルを閉じる
         const closeModal = () => {
             pdfModal.classList.remove('opacity-100');
-            document.body.style.overflow = ''; // 背面スクロール禁止を解除
+            document.body.style.overflow = ''; 
             setTimeout(() => pdfModal.classList.add('hidden'), 300);
         };
         
         pdfClose.addEventListener('click', closeModal);
     }
-   });
+       });
