@@ -1,4 +1,3 @@
-<!-- products.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -62,15 +61,15 @@
                     </a>
                 </nav>
 
-                <!-- 【追加】ウェブカタログボタンセクション -->
+                <!-- 【修正】ウェブカタログボタン -->
                 <div class="bg-slate-50 p-5 border border-slate-200 rounded-sm text-center shadow-sm">
                     <h4 class="text-sm font-bold text-slate-800 mb-3">最新の製品カタログ</h4>
-                    <!-- target="_blank" で別タブでPDFを開きます -->
-                    <a href="catalog.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-bold bg-sky-700 text-white rounded-sm hover:bg-sky-800 transition-colors shadow-sm group">
+                    <!-- hrefではなく、JavaScriptで制御するためにIDを付与 -->
+                    <a href="#" id="open-catalog-btn" class="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-bold bg-sky-700 text-white rounded-sm hover:bg-sky-800 transition-colors shadow-sm group">
                         <i data-lucide="book-open" class="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300"></i>
-                        ウェブカタログはこちら
+                        ウェブカタログを開く
                     </a>
-                    <p class="text-[10px] text-slate-500 mt-2 font-medium">※PDFファイルが開きます</p>
+                    <p class="text-[10px] text-slate-500 mt-2 font-medium">※画面上でそのまま閲覧できます</p>
                 </div>
             </aside>
 
@@ -175,6 +174,56 @@
             </div>
         </div>
     </footer>
+
+    <!-- ============================================== -->
+    <!-- 【追加】ウェブカタログ用 ポップアップ（モーダル） -->
+    <!-- ============================================== -->
+    <div id="pdf-modal" class="fixed inset-0 z-[100] hidden bg-slate-900/95 backdrop-blur-sm flex-col items-center justify-center opacity-0 transition-opacity duration-300">
+        
+        <!-- ヘッダーエリア -->
+        <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center text-white z-20 bg-gradient-to-b from-black/50 to-transparent">
+            <div class="font-bold flex items-center">
+                <i data-lucide="book-open" class="w-5 h-5 mr-2"></i> 製品カタログ
+            </div>
+            <button id="pdf-close" class="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors backdrop-blur-md">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- カタログ表示エリア -->
+        <div class="relative w-full max-w-5xl h-[85vh] flex items-center justify-center mt-12 px-4 md:px-12">
+            <!-- ローディング表示 -->
+            <div id="pdf-loading" class="absolute inset-0 flex flex-col items-center justify-center text-white z-0">
+                <i data-lucide="loader-2" class="w-8 h-8 animate-spin mb-2 text-sky-400"></i>
+                <span class="text-sm font-bold tracking-widest">読み込み中...</span>
+            </div>
+            
+            <!-- PDF描画用キャンバス -->
+            <canvas id="pdf-canvas" class="max-h-full max-w-full object-contain shadow-2xl relative z-10"></canvas>
+
+            <!-- 【超重要】左右のクリック判定エリア -->
+            <!-- 画面の左側半分をクリックすると前へ -->
+            <div id="pdf-prev-zone" class="absolute left-0 top-0 bottom-0 w-1/2 cursor-pointer group flex items-center justify-start p-4 z-20">
+                <div class="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-4 group-hover:translate-x-0 duration-300">
+                    <i data-lucide="chevron-left" class="w-8 h-8"></i>
+                </div>
+            </div>
+            <!-- 画面の右側半分をクリックすると次へ -->
+            <div id="pdf-next-zone" class="absolute right-0 top-0 bottom-0 w-1/2 cursor-pointer group flex items-center justify-end p-4 z-20">
+                <div class="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-4 group-hover:translate-x-0 duration-300">
+                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- フッター（ページ番号表示） -->
+        <div class="absolute bottom-6 left-0 right-0 text-center text-white font-mono text-sm tracking-widest z-20 bg-gradient-to-t from-black/50 to-transparent pt-6 pb-2">
+            <span id="pdf-page-num" class="text-lg font-bold">1</span> / <span id="pdf-page-count" class="text-slate-400">?</span>
+        </div>
+    </div>
+
+    <!-- PDF.js ライブラリの読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
