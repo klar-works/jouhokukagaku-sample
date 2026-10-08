@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     }
 
-    // 2. スプラッシュスクリーン（元の純白のまま。曇りバグは完全に解消）
+    // 2. スプラッシュスクリーンの制御
     const splash = document.getElementById('splash-screen');
     if(splash) {
         document.body.style.overflow = 'hidden';
@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. ヘッダーのスクロール時のスタイル変更
     const header = document.getElementById('main-header');
     if(header) {
-        header.style.zIndex = '50';
         window.addEventListener('scroll', () => {
             if (window.scrollY > 10) {
                 header.classList.add('bg-white/95', 'backdrop-blur-sm', 'shadow-sm', 'border-slate-200');
@@ -93,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMobile = false; 
 
     if(pdfTrigger && pdfModal && typeof pdfjsLib !== 'undefined') {
-        pdfModal.style.zIndex = '9999'; 
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         const url = 'catalog.pdf'; 
 
@@ -220,69 +218,17 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfClose.addEventListener('click', closeModal);
     }
 
-    // 8. 背景アニメーション（ハニカム幾何学・レイアウト完全保持）
+    // 8. 背景幾何学アニメーション専用のレンーダー
     const initBackgroundAnimation = () => {
-        
-        // A. Bodyの全画面背景を透明化し、一番奥にアニメーションを敷く準備
-        document.body.classList.remove('bg-slate-50', 'bg-white');
-        document.body.style.backgroundColor = 'transparent';
-
-        // B. セクションの全幅背景を、中央のコンテンツ枠に移動させる（根本解決）
-        // これにより、レイアウトやカードの中身を崩すことなく、左右の余白にだけアニメーションが露出します。
-        const mainSections = document.querySelectorAll('main > section');
-        mainSections.forEach(sec => {
-            // 画像背景や暗い背景のセクションはそのまま維持
-            if (sec.classList.contains('bg-slate-900') || sec.classList.contains('bg-sky-900')) return;
-
-            const hasBgWhite = sec.classList.contains('bg-white');
-            const hasBgSlate = sec.classList.contains('bg-slate-50');
-
-            if (hasBgWhite || hasBgSlate) {
-                // セクションの全幅背景と境界線を削除
-                sec.classList.remove('bg-white', 'bg-slate-50', 'border-t', 'border-slate-200');
-                sec.style.backgroundColor = 'transparent';
-
-                // 直下の中央寄せコンテナを取得
-                const container = sec.querySelector('.max-w-7xl, .max-w-4xl, .max-w-3xl, .max-w-5xl');
-                if (container) {
-                    // 背景色をコンテナ側に移す
-                    if (hasBgWhite) container.classList.add('bg-white');
-                    if (hasBgSlate) container.classList.add('bg-slate-50');
-                    
-                    // コンテナに背景が付くため、内側に余白を持たせてレイアウトを美しく保つ
-                    container.classList.add('py-12', 'px-6', 'sm:px-10', 'rounded-md', 'shadow-sm');
-                    
-                    // セクション側の無駄に広すぎた余白を削り、シャープに整える
-                    sec.classList.remove('py-20', 'py-24');
-                    sec.classList.add('py-12');
-                }
-            }
-        });
-
-        // 念のためメインコンテンツを手前に固定
-        const main = document.querySelector('main');
-        if (main) {
-            main.style.position = 'relative';
-            main.style.zIndex = '10';
-        }
-        const footer = document.querySelector('footer');
-        if (footer) {
-            footer.style.position = 'relative';
-            footer.style.zIndex = '10';
-        }
-
-        // C. Canvas背景の生成
         const canvas = document.createElement('canvas');
-        canvas.id = 'geometric-bg';
         canvas.style.position = 'fixed';
         canvas.style.top = '0';
         canvas.style.left = '0';
         canvas.style.width = '100vw';
         canvas.style.height = '100vh';
         canvas.style.pointerEvents = 'none';
-        canvas.style.zIndex = '-1'; 
-        
-        document.body.prepend(canvas); 
+        canvas.style.zIndex = '0'; // 最背面に固定
+        document.body.prepend(canvas);
 
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -297,16 +243,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
 
-            // Canvas自体の背景色（清潔感のあるごく僅かなライトグレー）
-            ctx.fillStyle = '#f8fafc'; 
+            ctx.fillStyle = '#f8fafc'; // 清潔感のあるベースカラー
             ctx.fillRect(0, 0, width, height);
 
-            // 六角形グリッドの移動速度
-            cameraX += 0.4;
-            cameraY += 0.2;
+            cameraX += 0.3;
+            cameraY += 0.15;
 
-            // 六角形のサイズ（視覚的にハッキリ認識できる大きさ）
-            const r = 50; 
+            const r = 55; 
             const xSpacing = r * 1.5;
             const ySpacing = Math.sqrt(3) * r;
 
@@ -334,8 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // はっきりと見えるスカイブルーの線
-            ctx.strokeStyle = 'rgba(14, 165, 233, 0.3)';
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.25)';
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
