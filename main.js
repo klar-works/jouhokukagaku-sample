@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     }
 
-    // 2. スプラッシュスクリーンの確実な制御
+    // 2. スプラッシュスクリーンの制御
     const splash = document.getElementById('splash-screen');
     if(splash) {
         document.body.style.overflow = 'hidden';
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(pdfTrigger && pdfModal && typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
-        const url = 'catalog.pdf';
+        const url = 'catalog.pdf'; 
 
         const checkMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
@@ -219,41 +219,56 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfClose.addEventListener('click', closeModal);
     }
 
-    // 8. 背景アニメーション（ポリマー・ネットワーク風）確実な修正版
+    // 8. 背景アニメーション（グラスモーフィズム対応・完全視認性版）
     const initBackgroundAnimation = () => {
-        // Tailwind CDNの制限を回避するため、完全にインラインスタイルで制御します
+        // --- A. コンテンツ背景のすりガラス化 ---
+        // アニメーションを透かして見せるため、HTMLのベタ塗り背景を半透明ガラス風に上書きします。
+        const bgElements = document.querySelectorAll('.bg-white, .bg-slate-50');
+        bgElements.forEach(el => {
+            // ヘッダーやフッター、モバイルメニューなど除外すべき要素はスキップ
+            if (el.tagName.toLowerCase() === 'footer' || el.closest('footer')) return;
+            if (el.id === 'main-header' || el.closest('#main-header')) return;
+            if (el.id === 'mobile-menu') return;
+            
+            // Tailwindの背景クラスを削除し、インラインで確実なスタイルを付与
+            el.classList.remove('bg-white');
+            el.classList.remove('bg-slate-50');
+            
+            // 視認性を保つため85%の不透明度＋すりガラス効果（backdrop-filter）
+            el.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
+            el.style.backdropFilter = 'blur(8px)';
+            el.style.WebkitBackdropFilter = 'blur(8px)'; // Safari用
+        });
+
+        // --- B. Canvasの生成と配置 ---
         const canvas = document.createElement('canvas');
         canvas.id = 'network-bg';
+        
+        // Canvasを最背面（z-index: -1）に配置し、見えない壁になるのを防ぎます
         canvas.style.position = 'fixed';
         canvas.style.top = '0';
         canvas.style.left = '0';
         canvas.style.width = '100%';
         canvas.style.height = '100%';
-        canvas.style.pointerEvents = 'none'; // 【重要】これで確実に見えない壁を貫通させます
-        canvas.style.zIndex = '1';
-        canvas.style.transition = 'opacity 1s ease';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '-1';
+        
+        // 白ベースからごく薄い水色へ変化する、見やすく上品な微グラデーション背景
+        canvas.style.background = 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)';
+        
+        canvas.style.transition = 'opacity 1.5s ease';
         canvas.style.opacity = '0';
         document.body.appendChild(canvas);
-
-        // コンテンツがキャンバスの下に隠れないように、主要な要素のZ-indexを引き上げます
-        const main = document.querySelector('main');
-        if(main) {
-            main.style.position = 'relative';
-            main.style.zIndex = '10';
-        }
-        const footer = document.querySelector('footer');
-        if(footer) {
-            footer.style.position = 'relative';
-            footer.style.zIndex = '10';
-        }
 
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
 
-        const particleColor = 'rgba(14, 165, 233, 0.2)'; 
-        const lineColor = 'rgba(148, 163, 184, 0.15)';   
-        const connectionDistance = 150; 
+        // --- C. アニメーションのクッキリ化 ---
+        // 汚れに見えないよう、濃いブルー（Sky-600）を採用し、線の濃度もアップ
+        const particleColor = 'rgba(2, 132, 199, 0.7)'; 
+        const lineColor = 'rgba(2, 132, 199, 0.35)';   
+        const connectionDistance = 160; 
 
         const resize = () => {
             width = canvas.width = window.innerWidth;
@@ -264,9 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.3;
-                this.vy = (Math.random() - 0.5) * 0.3;
-                this.radius = Math.random() * 1.5 + 0.5;
+                // 動きを少し早めて「アニメーション感」を強調
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                // ドットのサイズを大きくし、はっきりと認識できるようにする
+                this.radius = Math.random() * 2 + 1.5; 
             }
             update() {
                 this.x += this.vx;
@@ -286,7 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initParticles = () => {
             particles = [];
-            const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 25000), 80);
+            // パーティクル数を画面サイズに合わせて最適化
+            const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 20000), 100);
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
@@ -306,8 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
                         const opacity = 1 - (dist / connectionDistance);
-                        ctx.strokeStyle = lineColor.replace('0.15', (0.15 * opacity).toFixed(2));
-                        ctx.lineWidth = 0.5;
+                        ctx.strokeStyle = lineColor.replace('0.35', (0.35 * opacity).toFixed(2));
+                        ctx.lineWidth = 0.8; // 線を少し太くしてクッキリと
                         ctx.stroke();
                     }
                 }
@@ -324,9 +342,10 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticles();
         animate();
 
+        // 読み込み後、フワッと表示
         setTimeout(() => {
             canvas.style.opacity = '1';
-        }, 300);
+        }, 500);
     };
 
     initBackgroundAnimation();
