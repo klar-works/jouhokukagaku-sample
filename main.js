@@ -5,17 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     }
 
-    // 2. スプラッシュスクリーンの制御
+    // 2. スプラッシュスクリーンの制御（★元のアニメーションに完全復旧）
     const splash = document.getElementById('splash-screen');
     if(splash) {
-        document.body.style.overflow = 'hidden';
         setTimeout(() => {
             splash.classList.add('fade-out');
-            setTimeout(() => {
-                if (splash.parentNode) splash.remove();
-                document.body.style.overflow = '';
-            }, 800);
-        }, 2000); 
+            setTimeout(() => splash.remove(), 800);
+        }, 2500);
     }
 
     // 3. スクロールアニメーション
@@ -93,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(pdfTrigger && pdfModal && typeof pdfjsLib !== 'undefined') {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        
         const url = 'catalog.pdf'; 
 
         const checkMobile = () => window.matchMedia('(max-width: 768px)').matches;
@@ -219,27 +214,21 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfClose.addEventListener('click', closeModal);
     }
 
-    // 8. 背景アニメーション（ノイズゼロのウェーブ・波紋表現）
+    // 8. 背景アニメーション（六角形の幾何学・分子構造グリッド）
     const initBackgroundAnimation = () => {
-        // --- A. コンテンツ背景のすりガラス化（維持） ---
-        const bgElements = document.querySelectorAll('.bg-white, .bg-slate-50');
+        // --- A. スプラッシュを壊さない安全な透過処理 ---
+        // mainタグ直下のsectionのみを対象にし、オープニング画面(#splash-screen)やヘッダーを厳密に除外
+        const bgElements = document.querySelectorAll('main > section.bg-white, main > section.bg-slate-50');
         bgElements.forEach(el => {
-            if (el.tagName.toLowerCase() === 'footer' || el.closest('footer')) return;
-            if (el.id === 'main-header' || el.closest('#main-header')) return;
-            if (el.id === 'mobile-menu') return;
-            
-            el.classList.remove('bg-white');
-            el.classList.remove('bg-slate-50');
-            
-            // ガラスの質感を高めるため、不透明度を調整
-            el.style.backgroundColor = 'rgba(255, 255, 255, 0.82)';
-            el.style.backdropFilter = 'blur(12px)';
-            el.style.WebkitBackdropFilter = 'blur(12px)'; 
+            el.classList.remove('bg-white', 'bg-slate-50');
+            el.style.backgroundColor = 'rgba(255, 255, 255, 0.92)'; // 92%の不透明度で非常に読みやすく
+            el.style.backdropFilter = 'blur(4px)'; 
+            el.style.WebkitBackdropFilter = 'blur(4px)';
         });
 
-        // --- B. Canvasの生成（ウェーブ描画用） ---
+        // --- B. Canvasの生成 ---
         const canvas = document.createElement('canvas');
-        canvas.id = 'wave-bg';
+        canvas.id = 'geometric-bg';
         canvas.style.position = 'fixed';
         canvas.style.top = '0';
         canvas.style.left = '0';
@@ -247,89 +236,72 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.style.height = '100%';
         canvas.style.pointerEvents = 'none';
         canvas.style.zIndex = '-1';
-        canvas.style.transition = 'opacity 1.5s ease';
-        canvas.style.opacity = '0';
         document.body.appendChild(canvas);
 
         const ctx = canvas.getContext('2d');
         let width, height;
-        let time = 0;
+        let cameraX = 0;
+        let cameraY = 0;
 
         const resize = () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
         };
 
-        // --- C. ウェーブ（波）の設定 ---
-        // フィルムが重なり合うように、速度・振幅・色の違う3つの波を定義
-        const waves = [
-            { 
-                ampMultiplier: 1.0,  // 振幅の大きさ
-                wavelength: 0.001,   // 波の長さ（小さいほど緩やか）
-                speed: 0.004,        // 動くスピード
-                color: 'rgba(2, 132, 199, 0.1)', // 奥の波（少し濃いSky）
-                offsetY: 0.55        // 基準となる高さ（画面の55%の位置）
-            },
-            { 
-                ampMultiplier: 1.3, 
-                wavelength: 0.0015, 
-                speed: 0.002, 
-                color: 'rgba(14, 165, 233, 0.08)', // 中間の波
-                offsetY: 0.65 
-            },
-            { 
-                ampMultiplier: 0.8, 
-                wavelength: 0.0008, 
-                speed: 0.005, 
-                color: 'rgba(56, 189, 248, 0.12)', // 手前の波
-                offsetY: 0.75 
-            }
-        ];
-
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
-            
-            // 全体の背景グラデーション（白 〜 極薄い水色）
-            const gradient = ctx.createLinearGradient(0, 0, width, height);
-            gradient.addColorStop(0, '#ffffff');
-            gradient.addColorStop(1, '#f0f9ff'); 
-            ctx.fillStyle = gradient;
+
+            // 背景は純粋でクリーンな「白」
+            ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, width, height);
 
-            time += 1;
+            // カメラ（視点）を斜めにゆっくり移動させる
+            cameraX += 0.4;
+            cameraY += 0.2;
 
-            // 画面サイズに応じて波の高さを動的に調整
-            const baseAmplitude = height * 0.12;
+            // 六角形のサイズ設定
+            const r = 45; 
+            const xSpacing = r * 1.5;
+            const ySpacing = Math.sqrt(3) * r;
 
-            // 3つの波を描画
-            waves.forEach(wave => {
-                ctx.beginPath();
-                ctx.moveTo(0, height); // 左下からスタート
-                
-                // サインカーブ（曲線の計算）
-                for (let x = 0; x <= width; x += 15) {
-                    const y = (height * wave.offsetY) + Math.sin(x * wave.wavelength + time * wave.speed) * (baseAmplitude * wave.ampMultiplier);
-                    ctx.lineTo(x, y);
+            // 画面に映る範囲のみを計算して描画（パフォーマンス最適化）
+            const startCol = Math.floor(cameraX / xSpacing) - 1;
+            const endCol = startCol + Math.ceil(width / xSpacing) + 2;
+            const startRow = Math.floor(cameraY / ySpacing) - 1;
+            const endRow = startRow + Math.ceil(height / ySpacing) + 2;
+
+            ctx.beginPath();
+            for (let col = startCol; col <= endCol; col++) {
+                for (let row = startRow; row <= endRow; row++) {
+                    let x = col * xSpacing - cameraX;
+                    let y = row * ySpacing - cameraY;
+                    
+                    // 列ごとに高さをずらしてハニカム構造を作る
+                    if (col % 2 !== 0) y += ySpacing / 2;
+
+                    // 六角形を1つ描く
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i * 60) * Math.PI / 180;
+                        const px = x + r * Math.cos(angle);
+                        const py = y + r * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
                 }
-                
-                ctx.lineTo(width, height); // 右下へ
-                ctx.closePath();
-                
-                ctx.fillStyle = wave.color;
-                ctx.fill();
-            });
+            }
+            
+            // 視覚的にはっきりと認識できる色（スカイブルー、少し濃いめ）
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.25)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
 
             requestAnimationFrame(animate);
         };
 
         window.addEventListener('resize', resize);
-        
         resize();
         animate();
-
-        setTimeout(() => {
-            canvas.style.opacity = '1';
-        }, 500);
     };
 
     initBackgroundAnimation();
