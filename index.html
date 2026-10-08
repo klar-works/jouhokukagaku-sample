@@ -20,7 +20,7 @@
         }
     </script>
 </head>
-<body class="flex flex-col min-h-screen selection:bg-sky-200 selection:text-sky-900 bg-slate-50">
+<body class="flex flex-col min-h-screen selection:bg-sky-200 selection:text-sky-900 bg-transparent">
 
     <div id="splash-screen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center">
         <div class="flex items-center space-x-4 mb-4 splash-logo">
@@ -110,7 +110,7 @@
         </div>
     </header>
 
-    <main class="flex-grow pt-16">
+    <main class="flex-grow pt-16 relative z-10">
         <section class="relative h-screen min-h-[600px] max-h-[900px] flex items-center">
             <div class="absolute inset-0 z-0 bg-sky-900">
                 <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2940&auto=format&fit=crop" alt="自社工場設備" class="w-full h-full object-cover opacity-40 mix-blend-overlay"/>
@@ -138,8 +138,9 @@
             </div>
         </section>
 
-        <section class="py-24 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- セクション自体の背景を透明にし、中のコンテナに白背景と余白を持たせることで、上下左右にアニメーションを美しく露出させる構造 -->
+        <section class="py-12 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white py-16 px-6 sm:px-10 rounded-sm shadow-sm">
                 
                 <div class="flex flex-col md:flex-row items-center gap-12 mb-32 animate-on-scroll fade-in-up">
                     <div class="w-full md:w-1/2">
@@ -161,7 +162,7 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row-reverse items-center gap-12 mb-32 animate-on-scroll fade-in-up">
+                <div class="flex flex-col md:flex-row-reverse items-center gap-12 animate-on-scroll fade-in-up">
                     <div class="w-full md:w-1/2">
                         <div class="relative aspect-[4/3] overflow-hidden rounded-sm shadow-lg border border-slate-100">
                             <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=2940&auto=format&fit=crop" alt="製品群" class="w-full h-full object-cover" />
@@ -182,16 +183,10 @@
                 </div>
             </div>
         </section>
-    </main>
 
-    <!-- （既存）Z型セクション -->
-        <section class="py-24 bg-white">
-            <!-- （既存の Z型セクション の内容） -->
-        </section>
-
-        <!-- 【追加】News Section (お知らせ) -->
-        <section class="py-20 bg-slate-50 border-t border-slate-200">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- お知らせセクション -->
+        <section class="py-12 relative">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-slate-50 py-16 px-6 sm:px-10 rounded-sm shadow-sm border border-slate-200">
                 <div class="mb-10 flex items-center justify-between border-b-2 border-slate-900 pb-3 animate-on-scroll fade-in-up">
                     <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
                         お知らせ <span class="text-sm font-normal text-slate-500 uppercase tracking-widest ml-2">News</span>
@@ -203,7 +198,6 @@
                 
                 <div class="bg-white shadow-sm border border-slate-200 animate-on-scroll fade-in-up delay-100">
                     <ul class="divide-y divide-slate-100">
-                        <!-- お知らせアイテム 1 -->
                         <li>
                             <a href="#" class="flex flex-col sm:flex-row sm:items-center p-5 hover:bg-slate-50 transition-colors group">
                                 <div class="flex items-center mb-2 sm:mb-0 sm:w-48 shrink-0">
@@ -215,7 +209,6 @@
                                 </h3>
                             </a>
                         </li>
-                        <!-- お知らせアイテム 2 -->
                         <li>
                             <a href="#" class="flex flex-col sm:flex-row sm:items-center p-5 hover:bg-slate-50 transition-colors group">
                                 <div class="flex items-center mb-2 sm:mb-0 sm:w-48 shrink-0">
@@ -227,7 +220,6 @@
                                 </h3>
                             </a>
                         </li>
-                        <!-- お知らせアイテム 3 -->
                         <li>
                             <a href="#" class="flex flex-col sm:flex-row sm:items-center p-5 hover:bg-slate-50 transition-colors group">
                                 <div class="flex items-center mb-2 sm:mb-0 sm:w-48 shrink-0">
@@ -245,11 +237,8 @@
         </section>
     </main>
 
-    <!-- （既存）共通詳細フッター -->
-    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 border-t-4 border-sky-700">
-
     <!-- 共通詳細フッター -->
-    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 border-t-4 border-sky-700">
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 border-t-4 border-sky-700 relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                 <div class="lg:col-span-2">
