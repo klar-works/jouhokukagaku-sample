@@ -5,13 +5,23 @@ document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons();
     }
 
-    // 2. スプラッシュスクリーンの制御（★元のアニメーションに完全復旧）
+    // 2. スプラッシュスクリーンの絶対的制御（曇りバグの完全排除）
     const splash = document.getElementById('splash-screen');
     if(splash) {
+        // 絶対に最前面に出し、背景を純白に固定し、ぼかしを無効化する
+        splash.style.zIndex = '9999';
+        splash.style.backgroundColor = '#ffffff';
+        splash.style.backdropFilter = 'none';
+        splash.style.WebkitBackdropFilter = 'none';
+        
+        document.body.style.overflow = 'hidden';
         setTimeout(() => {
             splash.classList.add('fade-out');
-            setTimeout(() => splash.remove(), 800);
-        }, 2500);
+            setTimeout(() => {
+                if (splash.parentNode) splash.remove();
+                document.body.style.overflow = '';
+            }, 800);
+        }, 2000); 
     }
 
     // 3. スクロールアニメーション
@@ -63,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. ヘッダーのスクロール時のスタイル変更
     const header = document.getElementById('main-header');
     if(header) {
+        header.style.zIndex = '50'; // 確実に前面に配置
         window.addEventListener('scroll', () => {
             if (window.scrollY > 10) {
                 header.classList.add('bg-white/95', 'backdrop-blur-sm', 'shadow-sm', 'border-slate-200');
@@ -72,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 header.classList.add('border-transparent');
             }
         });
-   }
+    }
 
     // 7. ウェブカタログ (PDF.js)
     const pdfModal = document.getElementById('pdf-modal');
@@ -88,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isMobile = false; 
 
     if(pdfTrigger && pdfModal && typeof pdfjsLib !== 'undefined') {
+        pdfModal.style.zIndex = '9999'; // カタログを確実に最前面に
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         const url = 'catalog.pdf'; 
 
@@ -214,29 +226,50 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfClose.addEventListener('click', closeModal);
     }
 
-    // 8. 背景アニメーション（六角形の幾何学・分子構造グリッド）
+    // 8. 背景アニメーション（すべての領域に表示・ぼやけゼロ）
     const initBackgroundAnimation = () => {
-        // --- A. スプラッシュを壊さない安全な透過処理 ---
-        // mainタグ直下のsectionのみを対象にし、オープニング画面(#splash-screen)やヘッダーを厳密に除外
-        const bgElements = document.querySelectorAll('main > section.bg-white, main > section.bg-slate-50');
+        
+        // A. 曇りバグの徹底排除と、白背景の半透明化
+        document.body.classList.remove('bg-slate-50', 'bg-white');
+        document.body.style.backgroundColor = 'transparent';
+
+        const bgElements = document.querySelectorAll('.bg-white, .bg-slate-50');
         bgElements.forEach(el => {
+            // ヘッダー、フッター、スプラッシュ、メニュー等は除外
+            if (el.closest('header, footer, #mobile-menu, #splash-screen, #pdf-modal')) return;
+            
             el.classList.remove('bg-white', 'bg-slate-50');
-            el.style.backgroundColor = 'rgba(255, 255, 255, 0.92)'; // 92%の不透明度で非常に読みやすく
-            el.style.backdropFilter = 'blur(4px)'; 
-            el.style.WebkitBackdropFilter = 'blur(4px)';
+            
+            // ぼかし（backdrop-filter）は使わず、RGBAのみで背景を透かす（可読性確保のため88%の白）
+            el.style.backgroundColor = 'rgba(255, 255, 255, 0.88)';
+            el.style.backdropFilter = 'none';
+            el.style.WebkitBackdropFilter = 'none';
         });
 
-        // --- B. Canvasの生成 ---
+        // コンテンツ領域をCanvasの手前に出す
+        const main = document.querySelector('main');
+        if (main) {
+            main.style.position = 'relative';
+            main.style.zIndex = '10';
+        }
+        const footer = document.querySelector('footer');
+        if (footer) {
+            footer.style.position = 'relative';
+            footer.style.zIndex = '10';
+        }
+
+        // B. Canvas背景の生成
         const canvas = document.createElement('canvas');
         canvas.id = 'geometric-bg';
         canvas.style.position = 'fixed';
         canvas.style.top = '0';
         canvas.style.left = '0';
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
         canvas.style.pointerEvents = 'none';
-        canvas.style.zIndex = '-1';
-        document.body.appendChild(canvas);
+        canvas.style.zIndex = '0'; // 全要素の一番後ろ
+        
+        document.body.prepend(canvas); // bodyの先頭に配置
 
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -251,20 +284,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
 
-            // 背景は純粋でクリーンな「白」
+            // Canvas自体の背景は清潔感のある純白
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, width, height);
 
-            // カメラ（視点）を斜めにゆっくり移動させる
-            cameraX += 0.4;
-            cameraY += 0.2;
+            // 六角形グリッドの移動速度
+            cameraX += 0.5;
+            cameraY += 0.3;
 
-            // 六角形のサイズ設定
-            const r = 45; 
+            // 六角形のサイズ
+            const r = 50; 
             const xSpacing = r * 1.5;
             const ySpacing = Math.sqrt(3) * r;
 
-            // 画面に映る範囲のみを計算して描画（パフォーマンス最適化）
             const startCol = Math.floor(cameraX / xSpacing) - 1;
             const endCol = startCol + Math.ceil(width / xSpacing) + 2;
             const startRow = Math.floor(cameraY / ySpacing) - 1;
@@ -276,10 +308,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     let x = col * xSpacing - cameraX;
                     let y = row * ySpacing - cameraY;
                     
-                    // 列ごとに高さをずらしてハニカム構造を作る
                     if (col % 2 !== 0) y += ySpacing / 2;
 
-                    // 六角形を1つ描く
                     for (let i = 0; i < 6; i++) {
                         const angle = (i * 60) * Math.PI / 180;
                         const px = x + r * Math.cos(angle);
@@ -291,9 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // 視覚的にはっきりと認識できる色（スカイブルー、少し濃いめ）
-            ctx.strokeStyle = 'rgba(14, 165, 233, 0.25)';
-            ctx.lineWidth = 1.5;
+            // 半透明のセクション越しでもハッキリ見える、太めで濃いスカイブルー
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.4)';
+            ctx.lineWidth = 2.0;
             ctx.stroke();
 
             requestAnimationFrame(animate);
