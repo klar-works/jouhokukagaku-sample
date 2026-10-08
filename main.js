@@ -8,10 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. スプラッシュスクリーンの制御 (index.html用)
     const splash = document.getElementById('splash-screen');
     if(splash) {
+        // スプラッシュ表示中はスクロールを完全にロック
+        document.body.style.overflow = 'hidden';
+        
         setTimeout(() => {
             splash.classList.add('fade-out');
-            setTimeout(() => splash.remove(), 800);
-        }, 2500);
+            setTimeout(() => {
+                splash.remove();
+                // スプラッシュ終了と同時にスクロールロックを解除
+                document.body.style.overflow = '';
+            }, 800);
+        }, 2200); // 体感速度を上げるため、少しだけ待機時間を短縮
     }
 
     // 3. スクロールアニメーション (Intersection Observer)
@@ -250,10 +257,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const canvas = document.createElement('canvas');
         canvas.id = 'network-bg';
         
-        // 【修正点】 z-indexを z-[1] に変更し、セクションの背景色の上に表示。
-        // pointer-events-none でテキスト選択やボタンクリックを妨げないようにしています。
-        canvas.className = 'fixed inset-0 pointer-events-none opacity-0 transition-opacity duration-1000 z-[1]';
-        document.body.appendChild(canvas); // 末尾に追加して確実に上に重ねる
+        // 【修正】Tailwind CDNに依存せず、インラインスタイルで確実に付与する
+        // これにより、画面の操作がブロックされる（フリーズする）バグを完全に回避します
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.pointerEvents = 'none'; // 【重要】これでクリックやスクロールを貫通させます
+        canvas.style.zIndex = '0';           // 白い背景の下（奥）に配置
+        canvas.style.transition = 'opacity 1s ease';
+        canvas.style.opacity = '0';
+        
+        document.body.appendChild(canvas);
 
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -262,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // サイトのテーマカラーに合わせた設定
         const particleColor = 'rgba(14, 165, 233, 0.2)'; // sky-500
         const lineColor = 'rgba(148, 163, 184, 0.15)';   // slate-400
-        const connectionDistance = 150; // 線が繋がる距離
+        const connectionDistance = 150; 
 
         const resize = () => {
             width = canvas.width = window.innerWidth;
@@ -340,8 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animate();
 
         setTimeout(() => {
-            canvas.classList.remove('opacity-0');
-            canvas.classList.add('opacity-100');
+            canvas.style.opacity = '1';
         }, 300);
     };
 
