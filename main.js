@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    /* STREAMING_CHUNK:Icon Initialization */
     // 1. アイコンの初期化 (Lucide VanillaJS)
     if(typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
 
-    /* STREAMING_CHUNK:Splash Screen Control */
     // 2. スプラッシュスクリーンの制御 (index.html用)
     const splash = document.getElementById('splash-screen');
     if(splash) {
@@ -16,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2500);
     }
 
-    /* STREAMING_CHUNK:Scroll Animation Observer */
     // 3. スクロールアニメーション (Intersection Observer)
     const observerOptions = {
         threshold: 0.1, 
@@ -36,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    /* STREAMING_CHUNK:Accordion UI Control */
     // 4. アコーディオンUIの制御
     document.querySelectorAll('.accordion-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* STREAMING_CHUNK:Mobile Menu Control */
     // 5. モバイルメニューの制御
     const mobileBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -71,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* STREAMING_CHUNK:Header Scroll Effect */
     // 6. ヘッダーのスクロール時のスタイル変更
     const header = document.getElementById('main-header');
     if(header) {
@@ -85,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
    }
-    /* STREAMING_CHUNK:PDF Viewer Control */
+
     // 7. ウェブカタログ (PDF.js) の制御（レスポンシブ・見開き対応版）
     const pdfModal = document.getElementById('pdf-modal');
     const pdfTrigger = document.getElementById('open-catalog-btn');
@@ -149,20 +143,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const isSpread = pagesToRender.length === 2;
                     
-                    // 【解決策】Canvasを包むラッパー要素（div）を作り、それにフレックス配置を任せる
                     const wrapper = document.createElement('div');
                     if (isSpread) {
-                        // 見開き：左のページは右寄せ、右のページは左寄せで中央にピッタリ合わせる
                         wrapper.className = (i === 0)
                             ? 'w-1/2 h-full flex justify-end items-center'
                             : 'w-1/2 h-full flex justify-start items-center';
                     } else {
-                        // スマホ等（単独）：コンテナ全体でど真ん中に配置
                         wrapper.className = 'w-full h-full flex justify-center items-center';
                     }
 
                     const canvas = document.createElement('canvas');
-                    // Canvas自体はラッパー内で最大化し、はみ出さないように制限
                     canvas.className = 'max-w-full max-h-full object-contain bg-white shadow-xl transition-opacity duration-500';
                     
                     if (isSpread && i === 0) {
@@ -254,17 +244,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         pdfClose.addEventListener('click', closeModal);
     }
-});
 
-/* STREAMING_CHUNK:Background Animation */
     // 8. 背景アニメーション（ポリマー・ネットワーク風）
-    // 各HTMLを修正しなくて済むよう、JSから動的にCanvasを生成して最背面に配置します
     const initBackgroundAnimation = () => {
         const canvas = document.createElement('canvas');
         canvas.id = 'network-bg';
-        // Tailwindのクラスを使用して最背面に固定配置（ポインターイベント無効化でクリックを妨げない）
-        canvas.className = 'fixed inset-0 z-[-1] pointer-events-none opacity-0 transition-opacity duration-1000';
-        document.body.prepend(canvas);
+        
+        // 【修正点】 z-indexを z-[1] に変更し、セクションの背景色の上に表示。
+        // pointer-events-none でテキスト選択やボタンクリックを妨げないようにしています。
+        canvas.className = 'fixed inset-0 pointer-events-none opacity-0 transition-opacity duration-1000 z-[1]';
+        document.body.appendChild(canvas); // 末尾に追加して確実に上に重ねる
 
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -284,16 +273,15 @@ document.addEventListener('DOMContentLoaded', () => {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.3; // ゆっくりとした動き
+                this.vx = (Math.random() - 0.5) * 0.3;
                 this.vy = (Math.random() - 0.5) * 0.3;
-                this.radius = Math.random() * 1.5 + 0.5; // 極小のドットでミニマルに
+                this.radius = Math.random() * 1.5 + 0.5;
             }
 
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // 画面外に出たら反対側からループさせる（より自然な流れ）
                 if (this.x < 0) this.x = width;
                 if (this.x > width) this.x = 0;
                 if (this.y < 0) this.y = height;
@@ -310,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const initParticles = () => {
             particles = [];
-            // 画面サイズに応じてパーティクル数を調整（多すぎないように制御）
             const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 25000), 80);
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
@@ -324,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 particles[i].update();
                 particles[i].draw();
                 
-                // パーティクル同士の距離を計算して直線を引く
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
@@ -334,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        // 距離が近いほど線を濃くする
                         const opacity = 1 - (dist / connectionDistance);
                         ctx.strokeStyle = lineColor.replace('0.15', (0.15 * opacity).toFixed(2));
                         ctx.lineWidth = 0.5;
@@ -350,12 +335,10 @@ document.addEventListener('DOMContentLoaded', () => {
             initParticles();
         });
 
-        // 初期化と実行
         resize();
         initParticles();
         animate();
 
-        // ページロード完了後にフワッと表示させる
         setTimeout(() => {
             canvas.classList.remove('opacity-0');
             canvas.classList.add('opacity-100');
@@ -364,6 +347,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 実行
     initBackgroundAnimation();
-
-}); // DOMContentLoadedの閉じ括弧の直前に配置してください
-
+});
