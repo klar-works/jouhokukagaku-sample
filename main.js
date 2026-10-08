@@ -255,3 +255,115 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfClose.addEventListener('click', closeModal);
     }
 });
+
+/* STREAMING_CHUNK:Background Animation */
+    // 8. 背景アニメーション（ポリマー・ネットワーク風）
+    // 各HTMLを修正しなくて済むよう、JSから動的にCanvasを生成して最背面に配置します
+    const initBackgroundAnimation = () => {
+        const canvas = document.createElement('canvas');
+        canvas.id = 'network-bg';
+        // Tailwindのクラスを使用して最背面に固定配置（ポインターイベント無効化でクリックを妨げない）
+        canvas.className = 'fixed inset-0 z-[-1] pointer-events-none opacity-0 transition-opacity duration-1000';
+        document.body.prepend(canvas);
+
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // サイトのテーマカラーに合わせた設定
+        const particleColor = 'rgba(14, 165, 233, 0.2)'; // sky-500
+        const lineColor = 'rgba(148, 163, 184, 0.15)';   // slate-400
+        const connectionDistance = 150; // 線が繋がる距離
+
+        const resize = () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        };
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.3; // ゆっくりとした動き
+                this.vy = (Math.random() - 0.5) * 0.3;
+                this.radius = Math.random() * 1.5 + 0.5; // 極小のドットでミニマルに
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 画面外に出たら反対側からループさせる（より自然な流れ）
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = particleColor;
+                ctx.fill();
+            }
+        }
+
+        const initParticles = () => {
+            particles = [];
+            // 画面サイズに応じてパーティクル数を調整（多すぎないように制御）
+            const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 25000), 80);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        };
+
+        const animate = () => {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // パーティクル同士の距離を計算して直線を引く
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        // 距離が近いほど線を濃くする
+                        const opacity = 1 - (dist / connectionDistance);
+                        ctx.strokeStyle = lineColor.replace('0.15', (0.15 * opacity).toFixed(2));
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        };
+
+        window.addEventListener('resize', () => {
+            resize();
+            initParticles();
+        });
+
+        // 初期化と実行
+        resize();
+        initParticles();
+        animate();
+
+        // ページロード完了後にフワッと表示させる
+        setTimeout(() => {
+            canvas.classList.remove('opacity-0');
+            canvas.classList.add('opacity-100');
+        }, 300);
+    };
+
+    // 実行
+    initBackgroundAnimation();
+
+}); // DOMContentLoadedの閉じ括弧の直前に配置してください
+
