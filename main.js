@@ -219,32 +219,27 @@ document.addEventListener('DOMContentLoaded', () => {
         pdfClose.addEventListener('click', closeModal);
     }
 
-    // 8. 背景アニメーション（グラスモーフィズム対応・完全視認性版）
+    // 8. 背景アニメーション（ノイズゼロのウェーブ・波紋表現）
     const initBackgroundAnimation = () => {
-        // --- A. コンテンツ背景のすりガラス化 ---
-        // アニメーションを透かして見せるため、HTMLのベタ塗り背景を半透明ガラス風に上書きします。
+        // --- A. コンテンツ背景のすりガラス化（維持） ---
         const bgElements = document.querySelectorAll('.bg-white, .bg-slate-50');
         bgElements.forEach(el => {
-            // ヘッダーやフッター、モバイルメニューなど除外すべき要素はスキップ
             if (el.tagName.toLowerCase() === 'footer' || el.closest('footer')) return;
             if (el.id === 'main-header' || el.closest('#main-header')) return;
             if (el.id === 'mobile-menu') return;
             
-            // Tailwindの背景クラスを削除し、インラインで確実なスタイルを付与
             el.classList.remove('bg-white');
             el.classList.remove('bg-slate-50');
             
-            // 視認性を保つため85%の不透明度＋すりガラス効果（backdrop-filter）
-            el.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
-            el.style.backdropFilter = 'blur(8px)';
-            el.style.WebkitBackdropFilter = 'blur(8px)'; // Safari用
+            // ガラスの質感を高めるため、不透明度を調整
+            el.style.backgroundColor = 'rgba(255, 255, 255, 0.82)';
+            el.style.backdropFilter = 'blur(12px)';
+            el.style.WebkitBackdropFilter = 'blur(12px)'; 
         });
 
-        // --- B. Canvasの生成と配置 ---
+        // --- B. Canvasの生成（ウェーブ描画用） ---
         const canvas = document.createElement('canvas');
-        canvas.id = 'network-bg';
-        
-        // Canvasを最背面（z-index: -1）に配置し、見えない壁になるのを防ぎます
+        canvas.id = 'wave-bg';
         canvas.style.position = 'fixed';
         canvas.style.top = '0';
         canvas.style.left = '0';
@@ -252,97 +247,86 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.style.height = '100%';
         canvas.style.pointerEvents = 'none';
         canvas.style.zIndex = '-1';
-        
-        // 白ベースからごく薄い水色へ変化する、見やすく上品な微グラデーション背景
-        canvas.style.background = 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)';
-        
         canvas.style.transition = 'opacity 1.5s ease';
         canvas.style.opacity = '0';
         document.body.appendChild(canvas);
 
         const ctx = canvas.getContext('2d');
         let width, height;
-        let particles = [];
-
-        // --- C. アニメーションのクッキリ化 ---
-        // 汚れに見えないよう、濃いブルー（Sky-600）を採用し、線の濃度もアップ
-        const particleColor = 'rgba(2, 132, 199, 0.7)'; 
-        const lineColor = 'rgba(2, 132, 199, 0.35)';   
-        const connectionDistance = 160; 
+        let time = 0;
 
         const resize = () => {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
         };
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                // 動きを少し早めて「アニメーション感」を強調
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                // ドットのサイズを大きくし、はっきりと認識できるようにする
-                this.radius = Math.random() * 2 + 1.5; 
+        // --- C. ウェーブ（波）の設定 ---
+        // フィルムが重なり合うように、速度・振幅・色の違う3つの波を定義
+        const waves = [
+            { 
+                ampMultiplier: 1.0,  // 振幅の大きさ
+                wavelength: 0.001,   // 波の長さ（小さいほど緩やか）
+                speed: 0.004,        // 動くスピード
+                color: 'rgba(2, 132, 199, 0.1)', // 奥の波（少し濃いSky）
+                offsetY: 0.55        // 基準となる高さ（画面の55%の位置）
+            },
+            { 
+                ampMultiplier: 1.3, 
+                wavelength: 0.0015, 
+                speed: 0.002, 
+                color: 'rgba(14, 165, 233, 0.08)', // 中間の波
+                offsetY: 0.65 
+            },
+            { 
+                ampMultiplier: 0.8, 
+                wavelength: 0.0008, 
+                speed: 0.005, 
+                color: 'rgba(56, 189, 248, 0.12)', // 手前の波
+                offsetY: 0.75 
             }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0) this.x = width;
-                if (this.x > width) this.x = 0;
-                if (this.y < 0) this.y = height;
-                if (this.y > height) this.y = 0;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = particleColor;
-                ctx.fill();
-            }
-        }
-
-        const initParticles = () => {
-            particles = [];
-            // パーティクル数を画面サイズに合わせて最適化
-            const particleCount = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 20000), 100);
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        };
+        ];
 
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < connectionDistance) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        const opacity = 1 - (dist / connectionDistance);
-                        ctx.strokeStyle = lineColor.replace('0.35', (0.35 * opacity).toFixed(2));
-                        ctx.lineWidth = 0.8; // 線を少し太くしてクッキリと
-                        ctx.stroke();
-                    }
+            
+            // 全体の背景グラデーション（白 〜 極薄い水色）
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(1, '#f0f9ff'); 
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            time += 1;
+
+            // 画面サイズに応じて波の高さを動的に調整
+            const baseAmplitude = height * 0.12;
+
+            // 3つの波を描画
+            waves.forEach(wave => {
+                ctx.beginPath();
+                ctx.moveTo(0, height); // 左下からスタート
+                
+                // サインカーブ（曲線の計算）
+                for (let x = 0; x <= width; x += 15) {
+                    const y = (height * wave.offsetY) + Math.sin(x * wave.wavelength + time * wave.speed) * (baseAmplitude * wave.ampMultiplier);
+                    ctx.lineTo(x, y);
                 }
-            }
+                
+                ctx.lineTo(width, height); // 右下へ
+                ctx.closePath();
+                
+                ctx.fillStyle = wave.color;
+                ctx.fill();
+            });
+
             requestAnimationFrame(animate);
         };
 
-        window.addEventListener('resize', () => {
-            resize();
-            initParticles();
-        });
-
+        window.addEventListener('resize', resize);
+        
         resize();
-        initParticles();
         animate();
 
-        // 読み込み後、フワッと表示
         setTimeout(() => {
             canvas.style.opacity = '1';
         }, 500);
